@@ -136,7 +136,7 @@ public:
         i = 0;
         cout << "                         Afisarea Contractelor" << endl << endl;
         for (vector < ContractInchiriere* > ::iterator p = v.begin(); p != v.end(); p++) {
-            cout << endl << "                         Contractul numarul : " << i << endl << endl;
+            cout << endl  << "                         Contractul numarul : " << i << endl << endl;
             i++;
             (*p)->afisare();
         }
