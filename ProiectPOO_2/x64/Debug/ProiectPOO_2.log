@@ -1,1 +1,4 @@
-﻿  ProiectPOO_2.vcxproj -> C:\Users\david\Documents\ProiectPOO_2\x64\Debug\ProiectPOO_2.exe
+﻿  Main.cpp
+C:\Users\david\OneDrive\Documents\Project__POO__2\ProiectPOO_2\Main.cpp(91,19): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\david\OneDrive\Documents\Project__POO__2\ProiectPOO_2\Main.cpp(322,1): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  ProiectPOO_2.vcxproj -> C:\Users\david\OneDrive\Documents\Project__POO__2\x64\Debug\ProiectPOO_2.exe

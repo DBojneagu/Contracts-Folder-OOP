@@ -13,21 +13,60 @@ class Contract {
     int an_contract;
     string beneficiar;
     string furnizor;
-    double valoare;
+    int valoare;
 public:
 
     virtual void citire() {
         cout << "Numar contract: ";
         cin >> nr_contract;
+        while (nr_contract < 0) {
+            try {
+                if (nr_contract < 0)
+                    throw (nr_contract);
+            }
+            catch (int newval) {
+                cout << endl << "Valoarea unui numar al contractului nu poate fi negativa. Va rugam introduceti o valoare pozitiva : " << endl;
+                cin >> newval;
+                nr_contract = newval;
+
+            }
+        }
+
         cout << "An contract: ";
         cin >> an_contract;
+        while (an_contract < 0) {
+            try {
+                if (an_contract < 0)
+                    throw (an_contract);
+            }
+            catch (int newval) {
+                cout << endl << "Valoarea unui an nu poate fi negativa. Va rugam introduceti o valoare pozitiva : " << endl;
+                cin >> newval;
+                an_contract = newval;
+
+            }
+        }
+
         cout << "Beneficiar contract: ";
         cin >> beneficiar;
         cout << "Furnizor contract: ";
         cin >> furnizor;
+
         cout << "Valoare contract: ";
         cin >> valoare;
-        
+        while (valoare < 0) {
+            try {
+                if (valoare < 0)
+                    throw (valoare);
+            }
+            catch (int newval) {
+                cout << endl << "Valoarea unui contract nu poate fi negativa. Va rugam introduceti o valoare pozitiva : " << endl;
+                cin >> newval;
+                valoare = newval;
+
+            }
+        }
+
     }
     virtual void afisare() {
         cout << "Numar contract: " << nr_contract << endl;
@@ -61,9 +100,7 @@ public:
 
     }
 
-    ~Contract() {
-        cout << "Am apelat destructorul";
-    }
+    virtual ~Contract() {};
 
     friend istream& operator >> (istream& in, Contract& ob) {
         cout << "Introduceti numarul contractului : "; in >> ob.nr_contract;
@@ -147,6 +184,34 @@ public:
 
     ContractInchiriere(int a, int b, string c, string d, int e, int f) : Contract(a, b, c, d, e), perioada(f) {}
 
+
+
+    friend ostream& operator<< (ostream& out, ContractInchiriere& ob)
+    {
+        out << dynamic_cast<Contract&>(ob);   // downcasting
+        out << "Perioada contractului : " << ob.perioada << " ";
+        return out;
+    }
+
+    friend istream& operator>> (istream& in, ContractInchiriere& ob)
+    {
+        in >> dynamic_cast<Contract&>(ob);   // downcasting
+        cout << "Perioada contractului : "; in >> ob.perioada;
+        return in;
+    }
+
+    ContractInchiriere& operator = (ContractInchiriere& ob) {
+        {
+            if (this != &ob) {
+                Contract:: operator=(ob);
+                perioada = ob.perioada;
+            }
+            return *this;
+        }
+    }
+
+    ~ContractInchiriere() {}
+
     void citire() {
         Contract::citire();
         cout << "Perioada Contractului : ";
@@ -189,14 +254,15 @@ public:
     }
 
     ~Dosar() {
-        for (int i = 0; i < v.size(); i++) {
+        for (unsigned i = 0; i < v.size(); i++) {
             delete this->v.at(i);
 
         }
+        cout << endl << "Destructorul a fost apelat " << endl;
         v.clear();
     }
 
-    void citire_v() { // citirea si afisarea din vectorul de pointeri de obiecte.
+    void citire_v() {
         cout << endl << "Introduceti numarul de contracte : ";
         cin >> nr_contracte_inchiriere;
         cout << endl;
@@ -234,6 +300,24 @@ public:
             v.pop_back();
         }
     }
+
+    void Valoare_totala() {
+        int i = 1;
+        int total = 0;
+        if (!v.empty()) {
+            for (vector < ContractInchiriere* > ::iterator p = v.begin(); p != v.end(); p++) {
+                cout << endl << "Pentru contractul :" << i << " Valoarea incasata este de : " << ((*dynamic_cast <Contract*> (*p)).get_valoare()) * ((*dynamic_cast <ContractInchiriere*> (*p)).get_perioada()) << " RON pe o perioada de : " << ((*dynamic_cast <ContractInchiriere*> (*p)).get_perioada()) << " luni " << endl;
+                total = total + ((*dynamic_cast <Contract*> (*p)).get_valoare()) * ((*dynamic_cast <ContractInchiriere*> (*p)).get_perioada());
+                i++;
+            }
+
+            cout << endl << "Valoarea totala incasata este de : " << total << endl;
+
+        }
+        else {
+            cout << endl << "Nu putem efectua acest calcul deoarece nu exista contracte in dosar." << endl;
+        }
+    }
     int get_v_size() {
         return v.size();
     }
@@ -253,10 +337,11 @@ int main() {
 
     do {
         cout << "Salut! Ce doresti sa faci mai departe? " << endl << endl;
-        cout << "1.Adauga contracte in dosar " << endl;
+        cout << "1.Reactualizare contracte dosar " << endl;
         cout << "2.Afiseaza contractele din dosar" << endl;
         cout << "3.Elimina ultimul contract din dosar" << endl;
-        cout << "4.Iesi din program" << endl << endl;
+        cout << "4.Valoarea pentru fiecare contract din dosar si valoarea totala." << endl;
+        cout << "5.Iesi din program" << endl << endl;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
         cout << "Numarul de contracte in dosar la momentul actual : " << d1.get_v_size() << endl;
         cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
@@ -278,8 +363,12 @@ int main() {
             break;
 
         case 4:
+            d1.Valoare_totala();
+            cout << endl;
+            break;
+        case 5:
             return 0;
         }
 
-    } while (choice != 4);
+    } while (choice != 5);
 }
